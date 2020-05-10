@@ -1,0 +1,20 @@
+ITEM = {}
+ITEM["slab10"]=1500
+ITEM["slab12"]=1950
+ITEM["slab16"]=4400
+ITEM["slab20"]=7100
+ITEM["slab24"]=11000
+ITEM["slab28"]=15000
+ITEM["slab32"]=20000
+ITEM["port06"]=240
+ITEM["port12"]=430
+ITEM["port24"]=650
+ITEM["pier04"]=1100
+ITEM["weir14"]=810
+ITEM["ward08"]=410
+
+COLOR = {}
+COLOR["lapis"]     = {"rgb":"#4053e5", "cement":"white", "water":.35, "pozz":0.050, "black sand":0.3, "pigment":(("ubu", 0.064), ("sbu", 0.008))}
+COLOR["jasper"]    = {"rgb":"#e57c40", "cement":"white", "water":.35, "pozz":0.050, "black sand":0.3, "pigment":(("roy", 0.064))}
+COLOR["natural"]   = {"rgb":"#939393", "cement":"gray",  "water":.31, "pozz":0.050, "black sand":0.0}
+COLOR["charcoal"]  = {"rgb":"#6d6568", "cement":"gray",  "water":.31, "pozz":0.050, "black sand":0.4, "pigment":(("bkx", 0.040), ("rwd", .020))}
