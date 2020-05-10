@@ -1,12 +1,14 @@
 from tkinter import *
 from recipe_data import ITEM, COLOR
 import tkinter.font as tkFont
-#import tkfont
+import time
 
-itemID=[]
-itemMenu=[]
-numMenu=[]
-remButton=[]
+root = Tk()
+
+root.itemID=[]
+root.itemMenu=[]
+root.numMenu=[]
+root.remButton=[]
 
 class makethefunc:
     def __init__(self, callback, *args, **kwargs):
@@ -18,59 +20,70 @@ class makethefunc:
         return self.callback(*self.args, *self.kwargs)
 
 def change_dropdown(*args):
-    colormenu.configure(bg=COLOR[thiscolor.get()]["rgb"], activebackground=COLOR[thiscolor.get()]["rgb"])
+    root.colormenu.configure(bg=COLOR[root.thiscolor.get()]["rgb"], activebackground=COLOR[root.thiscolor.get()]["rgb"])
 
 def remover(lst, n):
-    del itemID[n]
-    itemMenu[n].destroy()
-    del itemMenu[n]
-    numMenu[n].destroy()
-    del numMenu[n]
-    remButton[n].destroy()
-    del remButton[n]
-    for i in range(n,len(remButton)):
-        remButton[i].configure(command=makethefunc(remover, lst, i))
+    del root.itemID[n]
+    root.itemMenu[n].destroy()
+    del root.itemMenu[n]
+    root.numMenu[n].destroy()
+    del root.numMenu[n]
+    root.remButton[n].destroy()
+    del root.remButton[n]
+    for i in range(n,len(root.remButton)):
+        root.remButton[i].configure(command=makethefunc(remover, lst, i))
 
 def additem(lst):
-    n = len(itemID)
-    itemID.append(StringVar(lst))
-    itemID[n].set(sorted(ITEM.keys())[0])
+    n = len(root.itemID)
+    root.itemID.append(StringVar(lst))
+    root.itemID[n].set(sorted(ITEM.keys())[0])
     
-    itemMenu.append(OptionMenu(lst, itemID[n], *sorted(ITEM.keys())))
-    itemMenu[n].grid(column=0)
+    root.itemMenu.append(OptionMenu(lst, root.itemID[n], *sorted(ITEM.keys())))
+    root.itemMenu[n].grid(column=0)
     
     thisrow = lst.grid_size()[1]-1
     
-    numMenu.append(Spinbox(lst, from_=1, to_=10))
-    numMenu[n].grid(row=thisrow, column=1)
+    root.numMenu.append(Spinbox(lst, from_=1, to_=10))
+    root.numMenu[n].grid(row=thisrow, column=1)
 
-    remButton.append(Button(lst, text=" - ", command=makethefunc(remover, lst, n)))
-    remButton[n].grid(row=thisrow, column=2)
+    root.remButton.append(Button(lst, text=" - ", command=makethefunc(remover, lst, n)))
+    root.remButton[n].grid(row=thisrow, column=2)
 
-root = Tk()
+def calcAndDraw(R):
+    totalweight = sum(int(A.get())*ITEM[B.get()] for A, B in zip(R.numMenu, R.itemID))
+    T = R.recipe
+    T.config(state=NORMAL)
+    T.delete(0.0, END)
+    T.insert(0.0, "recipe generated ")
+    T.insert(CURRENT,time.asctime())
+    T.insert(CURRENT,"\ntotal weight ")
+    T.insert(CURRENT, totalweight)
+    T.config(state=DISABLED)
+    return
 
 default_font = tkFont.nametofont("TkDefaultFont")
 default_font.configure(size=24)
 root.option_add("*Font", default_font)
 
-thiscolor = StringVar(root)
-thiscolor.set("natural")
-colormenu = OptionMenu(root, thiscolor, *sorted(COLOR.keys()))
-thiscolor.trace('w', change_dropdown)
-colormenu.configure(bg=COLOR[thiscolor.get()]["rgb"], activebackground=COLOR[thiscolor.get()]["rgb"])
+root.thiscolor = StringVar(root)
+root.thiscolor.set("natural")
+root.colormenu = OptionMenu(root, root.thiscolor, *sorted(COLOR.keys()))
+root.thiscolor.trace('w', change_dropdown)
+root.colormenu.configure(bg=COLOR[root.thiscolor.get()]["rgb"], activebackground=COLOR[root.thiscolor.get()]["rgb"])
 
-itemsframe = Frame(root)
-additem(itemsframe)
+root.itemsframe = Frame(root)
+additem(root.itemsframe)
+root.addbutton = Button(root, text=" + ", command=makethefunc(additem, root.itemsframe))
 
-addbutton = Button(root, text=" + ", command=makethefunc(additem, itemsframe))
+root.recipeframe = Frame(root)
+root.recipe = Text(root.recipeframe, width=36, height=12, state=DISABLED)
+root.gobutton = Button(root.recipeframe, text="Refresh Recipe", command=makethefunc(calcAndDraw, root))
+root.gobutton.grid(sticky=N+E+W)
+root.recipe.grid(sticky=N)
 
-recipeframe = Frame(root)
-recipe = Text(recipeframe, width=32, height=12)
-recipe.grid(sticky=N)
-
-colormenu.grid(sticky=N+E+W)
-itemsframe.grid(row=1, sticky=N)
-addbutton.grid(row=2, sticky=NE)
-recipeframe.grid(row=0, column=1, rowspan=3)
+root.colormenu.grid(sticky=N+E+W)
+root.itemsframe.grid(row=1, sticky=N)
+root.addbutton.grid(row=2, sticky=NE)
+root.recipeframe.grid(row=0, column=1, rowspan=3)
 
 mainloop()
